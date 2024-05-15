@@ -17,83 +17,62 @@ public class MyGdxGame4 extends ApplicationAdapter {
 	Stage stage;
 
 	@Override
-	public void create()
-	{
-		skin = new Skin(Gdx.files.internal("comic-ui.json"));
+	public void create() {
+		skin = new Skin(Gdx.files.internal("clean-crispy-ui.json"));
 
 		stage = new Stage();
 
 		Gdx.input.setInputProcessor(stage);
 
-		endDialog = new Dialog("End Game", skin)
-		{
-			protected void result(Object object)
-			{
-				HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
-				Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url("https://www.google.de").build();
-				Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
-					@Override
-					public void cancelled() {
-						System.out.println("Cancelled");
-					}
-
-					@Override
-					public void failed(Throwable t) {
-						System.out.println("FAILED: "+t.getMessage());
-					}
-
-					@Override
-					public void handleHttpResponse(Net.HttpResponse httpResponse) {
-						System.out.println("REBUT!");
-					}
-				});
-
-
-
-				System.out.println("Option: " + object);
-				Timer.schedule(new Timer.Task()
-				{
-
-					@Override
-					public void run()
-					{
-						endDialog.show(stage);
-					}
-				}, 1);
-			};
+		endDialog = new Dialog("End Game", skin) {
+			protected void result(Object object) {
+				if (object.equals("solicitud_http")) {
+					realizarSolicitudHTTP();
+				}
+			}
 		};
 
-		endDialog.button("Option 1", 1L);
-		endDialog.button("Option 2", 2L);
+		endDialog.button("Solicitud HTTP", "solicitud_http");
+	}
 
-		Timer.schedule(new Timer.Task()
-		{
+	private void realizarSolicitudHTTP() {
+		HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+		Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url("https://www.iesesteveterradas.cat/").build();
+		Gdx.net.sendHttpRequest(httpRequest, new Net.HttpResponseListener() {
+			@Override
+			public void cancelled() {
+				System.out.println("Cancelled");
+			}
 
 			@Override
-			public void run()
-			{
-				endDialog.show(stage);
+			public void failed(Throwable t) {
+				System.out.println("FAILED: " + t.getMessage());
 			}
-		}, 1);
 
+			@Override
+			public void handleHttpResponse(Net.HttpResponse httpResponse) {
+				System.out.println("REBUT!");
+			}
+		});
 
+		System.out.println("Solicitud HTTP enviada");
 	}
 
 	@Override
-	public void render()
-	{
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void render() {
+		Gdx.gl.glClearColor(0, 1, 0, 1); // Establece el color de fondo a verde
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // Borra el buffer de color con el color de fondo especificado
 
-		stage.act();
-		stage.draw();
+		stage.act(); // Actualiza todos los actores de la escena
+		stage.draw(); // Dibuja la escena
 
+		if (!endDialog.hasParent()) {
+			endDialog.show(stage);
+		}
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		stage.dispose();
 	}
-
 }
