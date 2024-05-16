@@ -51,7 +51,7 @@ public class MyGdxGame4 extends ApplicationAdapter {
 		endDialog.button(BUTTON_LABEL, "solicitud_http");
 		endDialog.show(stage);
 	}
-
+//
 	private void sendHttpRequest() {
 		HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 		Net.HttpRequest httpRequest = requestBuilder.newRequest().method(Net.HttpMethods.GET).url(HTTP_REQUEST_URL).build();
